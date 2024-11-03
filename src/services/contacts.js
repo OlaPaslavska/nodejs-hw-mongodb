@@ -1,18 +1,11 @@
-// import getAllContactsService from '../services/contacts.js';
+import { ContactsCollection } from '../db/models/contacts.js';
 
-const getAllContacts = async (req, res) => {
-  try {
-    const contacts = await getAllContacts();
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error', error });
-  }
+export const getAllContacts = async () => {
+  const contacts = await ContactsCollection.find();
+  return contacts;
 };
-const getContactById = async (id) => {
-  return await contact.findById(id);
+
+export const getContactById = async (contactId) => {
+  const contact = await ContactsCollection.findById(contactId);
+  return contact;
 };
-export { getAllContacts, getContactById };

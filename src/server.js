@@ -1,60 +1,26 @@
 import express from 'express';
 import cors from 'cors';
-import pino from 'pino-http';
+import pino from 'pino';
+import { getContacts } from './utils/env.js';
 
-import { env } from '../env.js';
-import { getAllContacts, getContactById } from './services/contacts.js';
+const logger = pino();
 
-const PORT = Number(env('PORT', '3000'));
-
-export const setupServer = () => {
+const setupServer = () => {
   const app = express();
 
   app.use(cors());
 
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
+  app.use(express.json());
 
-  app.get('/contacts', async (req, res) => {
-    const contacts = await getAllContacts();
-
-    res.json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
+  app.get('/contacts', getContacts); // Реєстрація роута
+  app.use((req, res) => {
+    res.status(404).json({ message: 'Not found' });
   });
 
-  app.get('/contacts/:contactID', async (req, res) => {
-    const { contactID } = req.params;
-    const contact = await getContactById(contactID);
-
-    if (!contact) {
-      res.status(404).json({
-        message: 'Contact not found',
-      });
-      return;
-    }
-
-    res.json({
-      status: 200,
-      message: `Successfully found contact with id ${contactID}!`,
-      data: contact,
-    });
-  });
-
-  app.use('*', (req, res, next) => {
-    res.status(404).json({
-      message: 'Not found',
-    });
-  });
-
+  const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
+
+export default setupServer;

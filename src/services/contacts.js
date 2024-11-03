@@ -1,26 +1,18 @@
-import { ContactsCollection } from '../db/models/contacts.js';
+// import getAllContactsService from '../services/contacts.js';
 
-// Функція для отримання всіх контактів
-export const getAllContacts = async () => {
+const getAllContacts = async (req, res) => {
   try {
-    const contacts = await ContactsCollection.find();
-    return contacts;
+    const contacts = await getAllContacts();
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully found contacts!',
+      data: contacts,
+    });
   } catch (error) {
-    console.error('Error fetching contacts:', error);
-    throw new Error('Could not fetch contacts.');
+    res.status(500).json({ message: 'Server error', error });
   }
 };
-
-// Функція для отримання контакту за ID
-export const getContactById = async (contactId) => {
-  try {
-    const contact = await ContactsCollection.findById(contactId);
-    if (!contact) {
-      throw new Error('Contact not found');
-    }
-    return contact;
-  } catch (error) {
-    console.error(`Error fetching contact with ID ${contactId}:`, error);
-    throw new Error('Could not fetch contact.');
-  }
+const getContactById = async (id) => {
+  return await contact.findById(id);
 };
+export { getAllContacts, getContactById };

@@ -19,11 +19,15 @@ export const setupServer = () => {
       },
     }),
   );
+  app.get('/', (req, res) => {
+    res.json({
+      message: 'Welcome to the API!',
+    });
+  });
 
   app.get('/contacts', async (req, res) => {
     const contacts = await getAllContacts();
-
-    res.json({
+    res.status(200).json({
       status: 200,
       message: 'Successfully found contacts!',
       data: contacts,
@@ -60,7 +64,7 @@ export const setupServer = () => {
     });
   });
 
-  app.listen(PORT, () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };
